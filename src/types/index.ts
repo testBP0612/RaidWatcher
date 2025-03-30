@@ -35,6 +35,7 @@ export interface Player {
   wclUrl: string;
   raiderIoUrl: string;
   enhancementWarning: string;
+  thumbnailUrl: string;
 }
 
 export interface WowClassCssVars {

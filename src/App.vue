@@ -5,13 +5,13 @@
       class="flex justify-between py-3 md:py-4 mb-3 md:mb-5 border-b border-wow-gold-dark flex-col items-start md:flex-row md:items-center gap-3 md:gap-4">
       <h1
         class="font-wow-title text-3xl sm:text-4xl font-bold text-wow-gold tracking-wide md:tracking-wider mb-3 md:mb-0 text-center md:text-left">
-        Lazyraiders
+        RaidWatcher
       </h1>
       <button @click="refreshData"
         class="bg-wow-red-button text-wow-gold-light border-2 border-wow-gold-dark rounded px-3 sm:px-4 py-1.5 sm:py-2 flex items-center gap-1.5 sm:gap-2 cursor-pointer transition-all duration-200 font-wow-title font-bold hover:bg-wow-red-button-hover hover:border-wow-gold hover:shadow-wow-btn-hover text-sm sm:text-base"
         title="重新整理資料">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" sm:width="18" sm:height="18"
-          fill="none" stroke="currentColor" stroke-width="2" class="stroke-wow-gold-light">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" class="stroke-wow-gold-light"
+          fill="none" stroke="currentColor" stroke-width="2">
           <path d="M21 12a9 9 0 0 1-9 9 9 9 0 0 1-9-9 9 9 0 0 1 9-9 9 9 0 0 1 6.39 2.61L21 9"></path>
           <path d="M21 4v5h-5"></path>
         </svg>
@@ -30,119 +30,109 @@
       </button>
     </div>
 
-    <!-- 資料表格 -->
-    <div v-else
-      class="overflow-auto rounded bg-wow-bg-panel border border-wow-gold-dark shadow-wow-box md:overflow-visible">
-      <table class="w-full border-collapse text-left text-sm sm:text-base md:text-lg">
-        <thead>
-          <tr>
-            <th
-              class="bg-gradient-to-b from-[#3d2f1b] to-[#211909] text-wow-gold py-2 sm:py-2.5 md:py-3 px-2 sm:px-3 md:px-4 font-wow-title border-b-2 border-wow-gold-dark font-bold tracking-wide md:tracking-wider whitespace-nowrap">
-              角色名稱
-            </th>
-            <th
-              class="bg-gradient-to-b from-[#3d2f1b] to-[#211909] text-wow-gold py-2 sm:py-2.5 md:py-3 px-2 sm:px-3 md:px-4 font-wow-title border-b-2 border-wow-gold-dark font-bold tracking-wide md:tracking-wider whitespace-nowrap">
-              裝等
-            </th>
-            <th
-              class="bg-gradient-to-b from-[#3d2f1b] to-[#211909] text-wow-gold py-2 sm:py-2.5 md:py-3 px-2 sm:px-3 md:px-4 font-wow-title border-b-2 border-wow-gold-dark font-bold tracking-wide md:tracking-wider whitespace-nowrap">
-              T裝
-            </th>
-            <th
-              class="bg-gradient-to-b from-[#3d2f1b] to-[#211909] text-wow-gold py-2 sm:py-2.5 md:py-3 px-2 sm:px-3 md:px-4 font-wow-title border-b-2 border-wow-gold-dark font-bold tracking-wide md:tracking-wider whitespace-nowrap">
-              本周最高M+
-            </th>
-            <th
-              class="bg-gradient-to-b from-[#3d2f1b] to-[#211909] text-wow-gold py-2 sm:py-2.5 md:py-3 px-2 sm:px-3 md:px-4 font-wow-title border-b-2 border-wow-gold-dark font-bold tracking-wide md:tracking-wider whitespace-nowrap">
-              本周場次
-            </th>
-            <th
-              class="bg-gradient-to-b from-[#3d2f1b] to-[#211909] text-wow-gold py-2 sm:py-2.5 md:py-3 px-2 sm:px-3 md:px-4 font-wow-title border-b-2 border-wow-gold-dark font-bold tracking-wide md:tracking-wider whitespace-nowrap">
-              上周場次
-            </th>
-            <th
-              class="bg-gradient-to-b from-[#3d2f1b] to-[#211909] text-wow-gold py-2 sm:py-2.5 md:py-3 px-2 sm:px-3 md:px-4 font-wow-title border-b-2 border-wow-gold-dark font-bold tracking-wide md:tracking-wider whitespace-nowrap">
-              缺少附魔或寶石
-            </th>
-            <th
-              class="bg-gradient-to-b from-[#3d2f1b] to-[#211909] text-wow-gold py-2 sm:py-2.5 md:py-3 px-2 sm:px-3 md:px-4 font-wow-title border-b-2 border-wow-gold-dark font-bold tracking-wide md:tracking-wider whitespace-nowrap">
-              連結
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          <!-- 載入中狀態 -->
-          <tr v-if="loading" class="loading-row">
-            <td colspan="8" class="text-center py-8 sm:py-9 md:py-10">
-              <div
-                class="w-8 h-8 sm:w-9 sm:h-9 md:w-10 md:h-10 border-3 sm:border-4 border-wow-gold border-t-transparent rounded-full mx-auto mb-3 md:mb-4 animate-spin">
-              </div>
-              <div class="text-sm sm:text-base">正在擷取資料中...</div>
-            </td>
-          </tr>
+    <!-- 載入中狀態 -->
+    <div v-if="loading" class="flex justify-center items-center py-10">
+      <div
+        class="w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 border-3 sm:border-4 border-wow-gold border-t-transparent rounded-full mx-auto mb-4 animate-spin">
+      </div>
+      <div class="text-sm sm:text-base md:text-lg text-wow-text-light">正在擷取資料中...</div>
+    </div>
 
-          <!-- 玩家資料列 -->
-          <tr v-else v-for="player in players" :key="player.name"
-            class="transition-colors duration-200 hover:bg-gradient-to-b hover:from-[rgba(61,47,27,0.5)] hover:to-[rgba(33,25,9,0.5)] even:bg-[rgba(40,30,20,0.5)] odd:bg-[rgba(30,25,15,0.5)]">
-            <td
-              class="py-1.5 sm:py-2 md:py-2.5 px-2 sm:px-3 md:px-4 border-b border-wow-border-dark font-bold text-shadow-wow-dark"
-              :style="{ color: player.classColor }" :title="player.localizedClassName">
-              <span class="text-xs sm:text-sm md:text-base">{{ player.name }}</span>
-            </td>
-            <td
-              class="py-1.5 sm:py-2 md:py-2.5 px-2 sm:px-3 md:px-4 border-b border-wow-border-dark font-bold text-shadow-wow-dark"
-              :style="{ color: player.ilvlColor }">
-              <span class="text-xs sm:text-sm md:text-base">{{ player.ilvl }}</span>
-            </td>
-            <td
-              class="py-1.5 sm:py-2 md:py-2.5 px-2 sm:px-3 md:px-4 border-b border-wow-border-dark text-wow-text-medium">
-              <span class="text-xs sm:text-sm md:text-base">{{ player.tierPieces }}</span>
-            </td>
-            <td
-              class="py-1.5 sm:py-2 md:py-2.5 px-2 sm:px-3 md:px-4 border-b border-wow-border-dark text-wow-highlight text-center font-bold">
-              <span class="text-xs sm:text-sm md:text-base">{{ player.key }}</span>
-            </td>
-            <td class="py-1.5 sm:py-2 md:py-2.5 px-2 sm:px-3 md:px-4 border-b border-wow-border-dark text-center"
-              :class="{ 'text-wow-horde bg-[rgba(179,0,0,0.2)]': player.currentRunsCount === 0 }">
-              <span class="text-xs sm:text-sm md:text-base">
-                {{ player.currentRunsCount }}
-                {{ player.currentRunsCount === 0 ? '🤡' : '' }}
-              </span>
-            </td>
-            <td class="py-1.5 sm:py-2 md:py-2.5 px-2 sm:px-3 md:px-4 border-b border-wow-border-dark text-center"
-              :class="{ 'text-wow-horde bg-[rgba(179,0,0,0.2)]': player.previousRunsCount === 0 }">
-              <span class="text-xs sm:text-sm md:text-base">
-                {{ player.previousRunsCount }}
-                {{ player.previousRunsCount === 0 ? '🤡' : '' }}
-              </span>
-            </td>
-            <td
-              class="py-1.5 sm:py-2 md:py-2.5 px-2 sm:px-3 md:px-4 border-b border-wow-border-dark text-center text-wow-horde">
-              <div v-if="player.enhancementWarning" class="relative inline-block cursor-help">
-                <i class="fas fa-exclamation-triangle peer text-xs sm:text-sm md:text-base"></i>
-                <span
-                  class="invisible absolute -left-60 w-48 sm:w-52 md:w-56 bg-wow-bg-panel text-wow-text-light text-left rounded border border-wow-gold-dark p-2 sm:p-2.5 z-50 opacity-0 transition-opacity duration-300 whitespace-pre-wrap leading-relaxed peer-hover:visible peer-hover:opacity-100 text-xs sm:text-sm">
-                  {{ player.enhancementWarning }}
-                </span>
+    <!-- 卡片式資料 -->
+    <div v-else class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-5">
+      <div v-for="player in players" :key="player.name"
+        class="bg-gradient-to-b from-[rgba(40,30,20,0.9)] to-[rgba(30,20,10,0.9)] border border-wow-gold-dark rounded shadow-wow-box overflow-hidden transition-all duration-300 hover:shadow-wow-box-hover hover:border-wow-gold transform hover:-translate-y-1">
+        <!-- 卡片頭部 -->
+        <div class="bg-gradient-to-b from-[#3d2f1b] to-[#211909] p-3 md:p-4 border-b border-wow-gold-dark">
+          <div class="flex justify-between items-center">
+            <div class="flex items-center gap-2 sm:gap-3">
+              <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-full overflow-hidden border-2 border-wow-gold-dark flex-shrink-0">
+                <img v-if="player.thumbnailUrl" :src="player.thumbnailUrl" alt="Character Portrait" class="w-full h-full object-cover" />
+                <div v-else class="w-full h-full bg-[rgba(0,0,0,0.5)] flex items-center justify-center text-wow-text-light">
+                  <span class="text-xs">無圖</span>
+                </div>
               </div>
-            </td>
-            <td class="py-1.5 sm:py-2 md:py-2.5 px-2 sm:px-3 md:px-4 border-b border-wow-border-dark">
-              <div class="flex justify-center gap-2 sm:gap-2.5">
-                <a :href="player.wclUrl" target="_blank"
-                  class="inline-flex items-center justify-center w-6 h-6 sm:w-6.5 md:w-7 sm:h-6.5 md:h-7 rounded-full text-wow-text-light transition-all duration-200 hover:scale-110 hover:shadow-wow-light hover:bg-wow-red-button-hover"
-                  title="WarcraftLogs">
-                  <img src="/images/wcl-icon.png" alt="WCL" class="w-full h-full">
-                </a>
-                <a :href="player.raiderIoUrl" target="_blank"
-                  class="inline-flex items-center justify-center w-6 h-6 sm:w-6.5 md:w-7 sm:h-6.5 md:h-7 rounded-full text-wow-text-light transition-all duration-200 hover:scale-110 hover:shadow-wow-light hover:bg-wow-alliance"
-                  title="Raider.io">
-                  <img src="/images/io-icon.webp" alt="RIO" class="w-full h-full">
-                </a>
+              <div>
+                <h3 class="font-wow-title font-bold text-lg md:text-xl tracking-wide" :style="{ color: player.classColor }">
+                  {{ player.name }}
+                </h3>
+                <span class="text-xs md:text-sm text-wow-text-light">{{ player.localizedClassName }}</span>
               </div>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+            </div>
+            <span class="text-sm md:text-base text-wow-text-light rounded px-2 py-1 bg-[rgba(0,0,0,0.3)] border border-wow-border-dark">
+              {{ player.realm }}
+            </span>
+          </div>
+        </div>
+
+        <!-- 卡片內容 -->
+        <div class="p-3 md:p-4 space-y-2.5 md:space-y-3">
+          <!-- 裝等與T裝 -->
+          <div class="flex justify-between">
+            <div class="space-y-1">
+              <p class="text-wow-text-light text-sm">裝等</p>
+              <p class="font-bold text-lg" :style="{ color: player.ilvlColor }">{{ player.ilvl }}</p>
+            </div>
+            <div class="space-y-1">
+              <p class="text-wow-text-light text-sm">T裝</p>
+              <p class="font-bold text-lg text-wow-text-medium">{{ player.tierPieces }}</p>
+            </div>
+          </div>
+
+          <!-- 本周最高M+ -->
+          <div class="bg-[rgba(0,0,0,0.2)] p-2.5 rounded border border-wow-border-dark">
+            <p class="text-wow-text-light text-sm mb-1">本周最高M+</p>
+            <p class="font-bold text-lg text-wow-highlight">{{ player.key }}</p>
+          </div>
+
+          <!-- 場次資訊 -->
+          <div class="grid grid-cols-2 gap-3">
+            <div class="bg-[rgba(0,0,0,0.2)] p-2 rounded border border-wow-border-dark"
+              :class="{ 'border-wow-horde bg-[rgba(179,0,0,0.2)]': player.currentRunsCount === 0 }">
+              <p class="text-wow-text-light text-xs mb-1">本周場次</p>
+              <div class="flex items-center">
+                <p class="font-bold" :class="{ 'text-wow-horde': player.currentRunsCount === 0 }">
+                  {{ player.currentRunsCount }}
+                </p>
+                <span v-if="player.currentRunsCount === 0" class="ml-1 text-lg">🤡</span>
+              </div>
+            </div>
+            <div class="bg-[rgba(0,0,0,0.2)] p-2 rounded border border-wow-border-dark"
+              :class="{ 'border-wow-horde bg-[rgba(179,0,0,0.2)]': player.previousRunsCount === 0 }">
+              <p class="text-wow-text-light text-xs mb-1">上周場次</p>
+              <div class="flex items-center">
+                <p class="font-bold" :class="{ 'text-wow-horde': player.previousRunsCount === 0 }">
+                  {{ player.previousRunsCount }}
+                </p>
+                <span v-if="player.previousRunsCount === 0" class="ml-1 text-lg">🤡</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- 警告 -->
+          <div v-if="player.enhancementWarning"
+            class="bg-[rgba(179,0,0,0.2)] p-2.5 rounded border border-wow-horde text-wow-text-light">
+            <p class="text-wow-horde text-sm font-bold mb-1 flex items-center">
+              <i class="fas fa-exclamation-triangle mr-1.5"></i>裝備警告
+            </p>
+            <p class="text-xs text-wow-text-light leading-relaxed whitespace-pre-wrap">{{ player.enhancementWarning }}</p>
+          </div>
+        </div>
+
+        <!-- 卡片底部 - 連結 -->
+        <div class="bg-[rgba(0,0,0,0.2)] p-2.5 md:p-3 border-t border-wow-border-dark flex justify-center gap-4">
+          <a :href="player.wclUrl" target="_blank"
+            class="inline-flex items-center justify-center w-8 h-8 md:w-9 md:h-9 rounded-full text-wow-text-light transition-all duration-200 hover:scale-110 hover:shadow-wow-light hover:bg-wow-red-button-hover"
+            title="WarcraftLogs">
+            <img src="/images/wcl-icon.png" alt="WCL" class="w-full h-full">
+          </a>
+          <a :href="player.raiderIoUrl" target="_blank"
+            class="inline-flex items-center justify-center w-8 h-8 md:w-9 md:h-9 rounded-full text-wow-text-light transition-all duration-200 hover:scale-110 hover:shadow-wow-light hover:bg-wow-alliance"
+            title="Raider.io">
+            <img src="/images/io-icon.webp" alt="RIO" class="w-full h-full">
+          </a>
+        </div>
+      </div>
     </div>
   </div>
 </template>

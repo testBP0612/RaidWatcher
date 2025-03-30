@@ -259,6 +259,7 @@ const usePlayerData = () => {
       wclUrl,
       raiderIoUrl,
       enhancementWarning,
+      thumbnailUrl: json.thumbnail_url,
     };
   };
 

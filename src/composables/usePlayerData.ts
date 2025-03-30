@@ -1,4 +1,4 @@
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, computed } from 'vue';
 import type {
   Player,
   PlayerInfo,
@@ -95,6 +95,8 @@ const usePlayerData = () => {
   const players = ref<Player[]>([]);
   const loading = ref<boolean>(false);
   const error = ref<string | null>(null);
+  const sortAscending = ref<boolean>(true); // 是否升冪排序
+  const showOnlyWarnings = ref<boolean>(false); // 是否只顯示有警告的玩家
 
   // 解析玩家文本
   const parsePlayersList = (text: string): string[] => text.trim().split('\n');
@@ -264,11 +266,11 @@ const usePlayerData = () => {
   };
 
   // 依照裝等排序玩家資料
-  const sortPlayersByItemLevel = (players: Player[]): Player[] => {
-    return [...players].sort((a, b) => {
-      const aIlvl = a.ilvl !== null ? a.ilvl : Infinity;
-      const bIlvl = b.ilvl !== null ? b.ilvl : Infinity;
-      return aIlvl - bIlvl;
+  const sortPlayersByItemLevel = (playersToSort: Player[], ascending: boolean = true): Player[] => {
+    return [...playersToSort].sort((a, b) => {
+      const aIlvl = a.ilvl !== null ? a.ilvl : ascending ? Infinity : -Infinity;
+      const bIlvl = b.ilvl !== null ? b.ilvl : ascending ? Infinity : -Infinity;
+      return ascending ? aIlvl - bIlvl : bIlvl - aIlvl;
     });
   };
 
@@ -310,11 +312,8 @@ const usePlayerData = () => {
       // 4. 過濾無效資料
       const validPlayersData = playersData.filter((player): player is Player => player !== null);
 
-      // 5. 依裝等排序
-      const sortedPlayers = sortPlayersByItemLevel(validPlayersData);
-
-      // 6. 更新狀態
-      players.value = sortedPlayers;
+      // 5. 更新玩家資料但不排序，因為排序會由 computed 屬性處理
+      players.value = validPlayersData;
     } catch (err: any) {
       console.error('獲取資料過程中發生錯誤:', err);
       error.value = `資料載入失敗: ${err.message}`;
@@ -323,18 +322,49 @@ const usePlayerData = () => {
     }
   };
 
-  onMounted(fetchAllPlayersData);
+  // 切換排序順序
+  const toggleSortOrder = (): void => {
+    sortAscending.value = !sortAscending.value;
+  };
+
+  // 切換篩選警告
+  const toggleWarningsFilter = (): void => {
+    showOnlyWarnings.value = !showOnlyWarnings.value;
+  };
 
   // 提供手動重新整理的方法
   const refreshData = (): void => {
     fetchAllPlayersData();
   };
 
+  const sortedPlayers = computed(() => {
+    let filteredPlayers = [...players.value];
+
+    // 如果啟用了篩選，先過濾出有裝備警告的玩家
+    if (showOnlyWarnings.value) {
+      filteredPlayers = filteredPlayers.filter(
+        (player) => player.enhancementWarning && player.enhancementWarning.length > 0
+      );
+    }
+
+    // 然後根據排序方向排序
+    return sortPlayersByItemLevel(filteredPlayers, sortAscending.value);
+  });
+  onMounted(fetchAllPlayersData);
+
   return {
-    loading,
-    players,
-    error,
-    refreshData,
+    state: {
+      players: sortedPlayers,
+      showOnlyWarnings,
+      loading,
+      error,
+      sortAscending,
+    },
+    actions: {
+      toggleSortOrder,
+      toggleWarningsFilter,
+      refreshData,
+    },
   };
 };
 

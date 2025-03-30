@@ -1,95 +1,9 @@
 import { ref, onMounted, computed } from 'vue';
-import type {
-  Player,
-  PlayerInfo,
-  TierPieces,
-  WowClassCssVars,
-  WowClassNames,
-  IlvlTiers,
-  PlayerProfile,
-  Item,
-  ItemSlots,
-} from '../types';
+import type { Player, PlayerInfo, PlayerProfile, ItemSlots } from '../types';
+import type { TierPieces } from '../types/wow';
 
-// 配置
-const config = {
-  playersFile: 'players.txt',
-  apiBaseUrl: 'https://raider.io/api/v1/characters/profile',
-  region: 'tw',
-  fields: 'mythic_plus_weekly_highest_level_runs,mythic_plus_previous_weekly_highest_level_runs,gear,class',
-  tierSlots: ['chest', 'hands', 'head', 'legs', 'shoulder'],
-  timezone: 'Asia/Taipei', // 台灣時區
-};
-
-// WoW 職業名稱與 CSS 變數映射
-const wowClassCssVars: WowClassCssVars = {
-  Warrior: 'var(--color-class-warrior)',
-  Paladin: 'var(--color-class-paladin)',
-  Hunter: 'var(--color-class-hunter)',
-  Rogue: 'var(--color-class-rogue)',
-  Priest: 'var(--color-class-priest)',
-  'Death Knight': 'var(--color-class-death-knight)',
-  DeathKnight: 'var(--color-class-death-knight)',
-  Shaman: 'var(--color-class-shaman)',
-  Mage: 'var(--color-class-mage)',
-  Warlock: 'var(--color-class-warlock)',
-  Monk: 'var(--color-class-monk)',
-  Druid: 'var(--color-class-druid)',
-  'Demon Hunter': 'var(--color-class-demon-hunter)',
-  DemonHunter: 'var(--color-class-demon-hunter)',
-  Evoker: 'var(--color-class-evoker)',
-};
-
-// WoW 職業名稱映射 (英文轉中文)
-const wowClassNames: WowClassNames = {
-  Warrior: '戰士',
-  Paladin: '聖騎士',
-  Hunter: '獵人',
-  Rogue: '盜賊',
-  Priest: '牧師',
-  'Death Knight': '死亡騎士',
-  Shaman: '薩滿',
-  Mage: '法師',
-  Warlock: '術士',
-  Monk: '武僧',
-  Druid: '德魯伊',
-  'Demon Hunter': '惡魔獵人',
-  Evoker: '喚能師',
-};
-
-// 裝等顏色等級 (可自定義)
-const ilvlTiers: IlvlTiers = {
-  poor: { min: 0, max: 599, color: 'var(--color-ilvl-poor)' },
-  common: { min: 600, max: 619, color: 'var(--color-ilvl-common)' },
-  uncommon: { min: 620, max: 629, color: 'var(--color-ilvl-uncommon)' },
-  rare: { min: 630, max: 639, color: 'var(--color-ilvl-rare)' },
-  epic: { min: 640, max: Infinity, color: 'var(--color-ilvl-epic)' },
-};
-
-// 可以附魔的裝備部位
-const enchantableSlots = ['back', 'chest', 'wrist', 'legs', 'finger1', 'finger2', 'mainhand'];
-
-// 可以插寶石的裝備部位
-const socketableSlots = ['neck', 'finger1', 'finger2'];
-
-const translateSlotNameMap: Record<string, string> = {
-  head: '頭部',
-  neck: '項鍊',
-  shoulder: '肩膀',
-  back: '披風',
-  chest: '胸甲',
-  waist: '腰帶',
-  wrist: '護腕',
-  hands: '手套',
-  legs: '腿部',
-  feet: '鞋子',
-  finger1: '戒指 1',
-  finger2: '戒指 2',
-  trinket1: '飾品 1',
-  trinket2: '飾品 2',
-  mainhand: '主手武器',
-  offhand: '副手武器',
-};
+import { config } from '@/config/api';
+import { wowConfig } from '@/config/wow';
 
 const usePlayerData = () => {
   const players = ref<Player[]>([]);
@@ -97,6 +11,9 @@ const usePlayerData = () => {
   const error = ref<string | null>(null);
   const sortAscending = ref<boolean>(true); // 是否升冪排序
   const showOnlyWarnings = ref<boolean>(false); // 是否只顯示有警告的玩家
+
+  const { wowClassCssVars, wowClassNames, ilvlTiers, enchantableSlots, socketableSlots, translateSlotNameMap } =
+    wowConfig;
 
   // 解析玩家文本
   const parsePlayersList = (text: string): string[] => text.trim().split('\n');
@@ -350,6 +267,7 @@ const usePlayerData = () => {
     // 然後根據排序方向排序
     return sortPlayersByItemLevel(filteredPlayers, sortAscending.value);
   });
+
   onMounted(fetchAllPlayersData);
 
   return {

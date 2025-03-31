@@ -18,12 +18,15 @@
     <LoadingSpinner v-if="loading" />
 
     <!-- 玩家列表 -->
-    <PlayerList
-      v-else
-      :players="players"
-      :show-only-warnings="showOnlyWarnings"
-      @toggle-warnings-filter="toggleWarningsFilter"
-    />
+    <template v-else>
+      <PlayerUploadDialog @update-player-list="handlePlayerListUpdate" />
+      <br />
+      <PlayerList
+        :players="players"
+        :show-only-warnings="showOnlyWarnings"
+        @toggle-warnings-filter="toggleWarningsFilter"
+      />
+    </template>
   </div>
 </template>
 
@@ -35,6 +38,7 @@
   import AppHeader from './components/layout/AppHeader.vue';
   import ErrorMessage from './components/ui/ErrorMessage.vue';
   import PlayerList from './components/player/PlayerList.vue';
+  import PlayerUploadDialog from './components/player/PlayerUploadDialog.vue';
 
   export default defineComponent({
     name: 'App',
@@ -43,6 +47,7 @@
       AppHeader,
       ErrorMessage,
       PlayerList,
+      PlayerUploadDialog,
     },
     setup() {
       const { state, actions } = usePlayerData();
@@ -59,6 +64,10 @@
         toggleSortOrder,
         toggleWarningsFilter,
         refreshData,
+        handlePlayerListUpdate() {
+          // 重新加載玩家數據
+          refreshData();
+        },
       };
     },
   });

@@ -4,6 +4,7 @@ import type { TierPieces } from '../types/wow';
 
 import { config } from '@/config/api';
 import { wowConfig } from '@/config/wow';
+import { getCurrentPlayerList } from '@/utils/playerStorage';
 
 const usePlayerData = () => {
   const players = ref<Player[]>([]);
@@ -14,9 +15,6 @@ const usePlayerData = () => {
 
   const { wowClassCssVars, wowClassNames, ilvlTiers, enchantableSlots, socketableSlots, translateSlotNameMap } =
     wowConfig;
-
-  // 解析玩家文本
-  const parsePlayersList = (text: string): string[] => text.trim().split('\n');
 
   // 從玩家字串中提取名稱和伺服器
   const extractPlayerInfo = (playerString: string): PlayerInfo => {
@@ -212,19 +210,13 @@ const usePlayerData = () => {
       error.value = null;
 
       // 1. 從文件取得玩家列表
-      const response = await fetch(config.playersFile);
-
-      if (!response.ok) {
-        throw new Error(`無法獲取玩家列表: ${response.status} ${response.statusText}`);
-      }
-
-      const text = await response.text();
+      const { playerList } = await getCurrentPlayerList();
 
       // 2. 轉換為玩家物件
-      const playersList = parsePlayersList(text).map(extractPlayerInfo);
+      const playersListInfo = playerList.map(extractPlayerInfo);
 
       // 3. 獲取每個玩家的資料
-      const playersData = await Promise.all(playersList.map(fetchPlayerData));
+      const playersData = await Promise.all(playersListInfo.map(fetchPlayerData));
 
       // 4. 過濾無效資料
       const validPlayersData = playersData.filter((player): player is Player => player !== null);

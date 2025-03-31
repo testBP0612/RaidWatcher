@@ -48,11 +48,11 @@ const wowClassNames = {
 
 // 裝等顏色等級 (可自定義)
 const ilvlTiers = {
-  poor: { min: 0, max: 599, color: '#9d9d9d' },    // 灰色 (垃圾)
+  poor: { min: 0, max: 599, color: '#9d9d9d' }, // 灰色 (垃圾)
   common: { min: 600, max: 619, color: '#ffffff' }, // 白色 (普通)
   uncommon: { min: 620, max: 629, color: '#1eff00' }, // 綠色 (優秀)
-  rare: { min: 630, max: 639, color: '#0070dd' },    // 藍色 (精良)
-  epic: { min: 640, max: Infinity, color: '#a335ee' },    // 紫色 (史詩)
+  rare: { min: 630, max: 639, color: '#0070dd' }, // 藍色 (精良)
+  epic: { min: 640, max: Infinity, color: '#a335ee' }, // 紫色 (史詩)
 };
 
 export default {
@@ -62,10 +62,10 @@ export default {
     const error = ref(null);
 
     // 解析玩家文本
-    const parsePlayersList = (text) => text.trim().split('\n');
+    const parsePlayersList = text => text.trim().split('\n');
 
     // 從玩家字串中提取名稱和伺服器
-    const extractPlayerInfo = (playerString) => {
+    const extractPlayerInfo = playerString => {
       const [name, realm] = playerString.split('-');
       return { name, realm };
     };
@@ -81,7 +81,7 @@ export default {
     };
 
     // 計算裝備的階層件數
-    const countTierPieces = (items) => {
+    const countTierPieces = items => {
       if (!items) return {};
 
       return config.tierSlots.reduce((acc, slot) => {
@@ -94,7 +94,7 @@ export default {
     };
 
     // 轉換UTC時間到台灣時區
-    const convertToTaiwanTime = (utcDateString) => {
+    const convertToTaiwanTime = utcDateString => {
       if (!utcDateString) return 'n/a';
 
       const date = new Date(utcDateString);
@@ -109,7 +109,7 @@ export default {
     };
 
     // 格式化階層件數為顯示文字
-    const formatTierPieces = (tierPieces) => {
+    const formatTierPieces = tierPieces => {
       return (
         Object.entries(tierPieces)
           .map(([tier, count]) => `${tier} × ${count}`)
@@ -118,19 +118,19 @@ export default {
     };
 
     // 獲取職業顏色 (支援英文名稱，返回 CSS 變數)
-    const getClassColor = (className) => {
+    const getClassColor = className => {
       return wowClassCssVars[className] || 'var(--class-unknown, #CCCCCC)';
     };
 
     // 獲取職業名稱
-    const getClassName = (classId) => {
+    const getClassName = classId => {
       return wowClassNames[classId] || '未知';
     };
 
     // 獲取裝等顏色 (使用 CSS 變數)
-    const getIlvlColor = (ilvl) => {
+    const getIlvlColor = ilvl => {
       if (ilvl === 'n/a') return 'var(--ilvl-poor)'; // 預設灰色
-      
+
       const numIlvl = Number(ilvl);
       for (const tier in ilvlTiers) {
         const { min, max, color } = ilvlTiers[tier];
@@ -161,20 +161,20 @@ export default {
       return {
         name: playerName,
         ilvl: gear.item_level_equipped ? Math.round(gear.item_level_equipped) : null,
-				ilvlColor,
+        ilvlColor,
         key: highestCurrentRun ? highestCurrentRun.mythic_level : 'n/a',
         currentRunsCount: currentRuns.length >= 10 ? '10+' : currentRuns.length,
         previousRunsCount: previousRuns.length >= 10 ? '10+' : previousRuns.length,
         time: highestCurrentRun ? convertToTaiwanTime(highestCurrentRun.completed_at) : 'n/a',
         tierPieces: formattedTierPieces,
-				classColor,
-				localizedClassName,
-				className,
+        classColor,
+        localizedClassName,
+        className,
       };
     };
 
     // 依照裝等排序玩家資料
-    const sortPlayersByItemLevel = (players) => {
+    const sortPlayersByItemLevel = players => {
       return [...players].sort((a, b) => {
         const aIlvl = a.ilvl !== null ? a.ilvl : Infinity;
         const bIlvl = b.ilvl !== null ? b.ilvl : Infinity;
@@ -183,7 +183,7 @@ export default {
     };
 
     // 獲取玩家資料
-    const fetchPlayerData = async (player) => {
+    const fetchPlayerData = async player => {
       try {
         const { name } = player;
         const url = buildApiUrl(player);
@@ -218,7 +218,7 @@ export default {
         const playersData = await Promise.all(playersList.map(fetchPlayerData));
 
         // 4. 過濾無效資料
-        const validPlayersData = playersData.filter((player) => player !== null);
+        const validPlayersData = playersData.filter(player => player !== null);
 
         // 5. 依裝等排序
         const sortedPlayers = sortPlayersByItemLevel(validPlayersData);

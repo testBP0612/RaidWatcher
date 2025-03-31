@@ -1,4 +1,4 @@
-@import "tailwindcss";
+@import 'tailwindcss';
 
 @theme {
   /* WoW 主題顏色 */
@@ -15,23 +15,23 @@
   --color-wow-border-dark: #2e2418;
   --color-wow-horde: #b30000;
   --color-wow-alliance: #0078ff;
-  
+
   /* 職業顏色 */
-  --color-class-warrior: #C79C6E;
-  --color-class-paladin: #F58CBA;
-  --color-class-hunter: #ABD473;
-  --color-class-rogue: #FFF569;
-  --color-class-priest: #FFFFFF;
-  --color-class-death-knight: #C41F3B;
-  --color-class-shaman: #0070DE;
-  --color-class-mage: #69CCF0;
-  --color-class-warlock: #9482C9;
-  --color-class-monk: #00FF96;
-  --color-class-druid: #FF7D0A;
-  --color-class-demon-hunter: #A330C9;
-  --color-class-evoker: #33937F;
-  --color-class-unknown: #CCCCCC;
-  
+  --color-class-warrior: #c79c6e;
+  --color-class-paladin: #f58cba;
+  --color-class-hunter: #abd473;
+  --color-class-rogue: #fff569;
+  --color-class-priest: #ffffff;
+  --color-class-death-knight: #c41f3b;
+  --color-class-shaman: #0070de;
+  --color-class-mage: #69ccf0;
+  --color-class-warlock: #9482c9;
+  --color-class-monk: #00ff96;
+  --color-class-druid: #ff7d0a;
+  --color-class-demon-hunter: #a330c9;
+  --color-class-evoker: #33937f;
+  --color-class-unknown: #cccccc;
+
   /* 裝等顏色 */
   --color-ilvl-poor: #9d9d9d;
   --color-ilvl-common: #ffffff;
@@ -40,11 +40,11 @@
   --color-ilvl-epic: #a335ee;
   --color-ilvl-legendary: #ff8000;
   --color-ilvl-artifact: #e6cc80;
-  
+
   /* 字體 */
   --font-wow: 'Noto Sans TC', 'Cinzel', sans-serif;
   --font-wow-title: 'Cinzel', serif;
-  
+
   /* 陰影 */
   --shadow-wow-text: 0 0 10px rgba(200, 170, 110, 0.5);
   --shadow-wow-box: 0 0 15px rgba(0, 0, 0, 0.5);
@@ -63,7 +63,7 @@ body {
 }
 
 body::before {
-  content: "";
+  content: '';
   position: absolute;
   top: 0;
   left: 0;

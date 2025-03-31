@@ -260,7 +260,7 @@ const usePlayerData = () => {
     // 如果啟用了篩選，先過濾出有裝備警告的玩家
     if (showOnlyWarnings.value) {
       filteredPlayers = filteredPlayers.filter(
-        (player) => player.enhancementWarning && player.enhancementWarning.length > 0
+        player => player.enhancementWarning && player.enhancementWarning.length > 0,
       );
     }
 

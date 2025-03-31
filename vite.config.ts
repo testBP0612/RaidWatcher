@@ -8,7 +8,7 @@ export default defineConfig({
   base: '/RaidWatcher/', // 必須 GitHub 倉庫名稱一致
   resolve: {
     alias: {
-      '@': resolve(__dirname, './src')
-    }
-  }
+      '@': resolve(__dirname, './src'),
+    },
+  },
 });

@@ -13,7 +13,7 @@
         class="bg-wow-red-button text-wow-gold-light border-2 border-wow-gold-dark rounded px-3 sm:px-4 py-1.5 sm:py-2 flex items-center gap-1.5 sm:gap-2 cursor-pointer transition-all duration-200 font-wow-title font-bold hover:bg-wow-red-button-hover hover:border-wow-gold hover:shadow-wow-btn-hover text-sm sm:text-base"
         :class="{ 'bg-wow-red-button-hover border-wow-gold': showOnlyWarnings }"
         title="只顯示有裝備警告的玩家"
-        @click="$emit('toggleWarningsFilter')"
+        @click="emit('toggleWarningsFilter')"
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -36,7 +36,7 @@
       <button
         class="bg-wow-red-button text-wow-gold-light border-2 border-wow-gold-dark rounded px-3 sm:px-4 py-1.5 sm:py-2 flex items-center gap-1.5 sm:gap-2 cursor-pointer transition-all duration-200 font-wow-title font-bold hover:bg-wow-red-button-hover hover:border-wow-gold hover:shadow-wow-btn-hover text-sm sm:text-base"
         title="切換排序順序"
-        @click="$emit('toggleSortOrder')"
+        @click="emit('toggleSortOrder')"
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -58,7 +58,7 @@
       <button
         class="bg-wow-red-button text-wow-gold-light border-2 border-wow-gold-dark rounded px-3 sm:px-4 py-1.5 sm:py-2 flex items-center gap-1.5 sm:gap-2 cursor-pointer transition-all duration-200 font-wow-title font-bold hover:bg-wow-red-button-hover hover:border-wow-gold hover:shadow-wow-btn-hover text-sm sm:text-base"
         title="重新整理資料"
-        @click="$emit('refreshData')"
+        @click="emit('refreshData')"
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -80,25 +80,18 @@
   </div>
 </template>
 
-<script lang="ts">
-  import { defineComponent } from 'vue';
-
-  export default defineComponent({
-    name: 'AppHeader',
-    props: {
-      title: String,
-      showOnlyWarnings: {
-        type: Boolean,
-        default: false,
-        required: true,
-      },
-      sortAscending: {
-        type: Boolean,
-        default: false,
-        required: true,
-      },
-      loading: Boolean,
-    },
-    emits: ['toggleWarningsFilter', 'toggleSortOrder', 'refreshData'],
-  });
+<script lang="ts" setup>
+  interface Props {
+    title: string;
+    showOnlyWarnings: boolean;
+    sortAscending: boolean;
+    loading: boolean;
+  }
+  interface Emits {
+    (e: 'toggleWarningsFilter'): void;
+    (e: 'toggleSortOrder'): void;
+    (e: 'refreshData'): void;
+  }
+  defineProps<Props>();
+  const emit = defineEmits<Emits>();
 </script>

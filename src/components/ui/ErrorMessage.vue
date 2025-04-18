@@ -5,24 +5,21 @@
     <p class="mb-3 sm:mb-4 text-base sm:text-lg md:text-xl text-wow-text-light">{{ message }}</p>
     <button
       class="bg-wow-red-button text-wow-gold-light border border-wow-gold-dark px-3 sm:px-4 py-1.5 sm:py-2 rounded cursor-pointer font-wow-title font-bold transition-all duration-200 hover:bg-wow-red-button-hover hover:border-wow-gold hover:shadow-wow-btn-hover text-sm sm:text-base"
-      @click="$emit('retry')"
+      @click="emit('retry')"
     >
       重試
     </button>
   </div>
 </template>
 
-<script lang="ts">
-  import { defineComponent } from 'vue';
+<script lang="ts" setup>
+  interface Props {
+    message: string;
+  }
+  interface Emits {
+    (e: 'retry'): void;
+  }
+  defineProps<Props>();
 
-  export default defineComponent({
-    name: 'ErrorMessage',
-    props: {
-      message: {
-        type: String,
-        required: true,
-      },
-    },
-    emits: ['retry'],
-  });
+  const emit = defineEmits<Emits>();
 </script>

@@ -19,7 +19,7 @@
 
     <!-- 玩家列表 -->
     <template v-else>
-      <PlayerUploadDialog @update-player-list="handlePlayerListUpdate" />
+      <PlayerUploadDialog @update-player-list="refreshData" />
       <br />
       <PlayerList
         :players="players"
@@ -30,9 +30,7 @@
   </div>
 </template>
 
-<script lang="ts">
-  import { defineComponent } from 'vue';
-
+<script lang="ts" setup>
   import usePlayerData from './composables/usePlayerData';
   import LoadingSpinner from './components/ui/LoadingSpinner.vue';
   import AppHeader from './components/layout/AppHeader.vue';
@@ -40,37 +38,8 @@
   import PlayerList from './components/player/PlayerList.vue';
   import PlayerUploadDialog from './components/player/PlayerUploadDialog.vue';
 
-  export default defineComponent({
-    name: 'App',
-    components: {
-      LoadingSpinner,
-      AppHeader,
-      ErrorMessage,
-      PlayerList,
-      PlayerUploadDialog,
-    },
-    setup() {
-      const { state, actions } = usePlayerData();
-      const { players, showOnlyWarnings, loading, error, sortAscending } = state;
+  const { state, actions } = usePlayerData();
+  const { players, showOnlyWarnings, loading, error, sortAscending } = state;
 
-      const { toggleSortOrder, toggleWarningsFilter, refreshData } = actions;
-
-      return {
-        players,
-        showOnlyWarnings,
-        loading,
-        error,
-        sortAscending,
-        toggleSortOrder,
-        toggleWarningsFilter,
-        refreshData,
-        handlePlayerListUpdate() {
-          // 重新加載玩家數據
-          refreshData();
-        },
-      };
-    },
-  });
+  const { toggleSortOrder, toggleWarningsFilter, refreshData } = actions;
 </script>
-
-<style src="./style.css"></style>

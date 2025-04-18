@@ -140,17 +140,12 @@
   </div>
 </template>
 
-<script lang="ts">
-  import { defineComponent, type PropType } from 'vue';
+<script lang="ts" setup>
   import type { Player } from '@/types';
 
-  export default defineComponent({
-    name: 'PlayerCard',
-    props: {
-      player: {
-        type: Object as PropType<Player>,
-        required: true,
-      },
-    },
-  });
+  interface Props {
+    player: Player;
+  }
+
+  defineProps<Props>();
 </script>

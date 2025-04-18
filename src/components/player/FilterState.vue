@@ -28,24 +28,20 @@
     <p class="text-wow-text-light text-lg">目前沒有玩家存在裝備警告</p>
     <button
       class="mt-4 bg-wow-red-button text-wow-gold-light border border-wow-gold-dark px-3 py-1.5 rounded cursor-pointer font-wow-title font-bold transition-all duration-200 hover:bg-wow-red-button-hover hover:border-wow-gold hover:shadow-wow-btn-hover text-sm"
-      @click="$emit('toggleFilter')"
+      @click="emit('toggleFilter')"
     >
       顯示所有玩家
     </button>
   </div>
 </template>
 
-<script lang="ts">
-  import { defineComponent } from 'vue';
-
-  export default defineComponent({
-    name: 'FilterState',
-    props: {
-      count: {
-        type: Number,
-        required: true,
-      },
-    },
-    emits: ['toggleFilter'],
-  });
+<script lang="ts" setup>
+  interface Props {
+    count: number;
+  }
+  interface Emits {
+    (e: 'toggleFilter'): void;
+  }
+  defineProps<Props>();
+  const emit = defineEmits<Emits>();
 </script>

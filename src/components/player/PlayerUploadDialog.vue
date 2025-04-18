@@ -2,8 +2,8 @@
   <div>
     <!-- 上傳按鈕 - 位於頁面頂部的操作區域 -->
     <button
-      @click="openDialog"
       class="bg-wow-red-button text-wow-gold-light border-2 border-wow-gold-dark rounded px-3 sm:px-4 py-1.5 sm:py-2 flex items-center gap-1.5 sm:gap-2 cursor-pointer transition-all duration-200 font-wow-title font-bold hover:bg-wow-red-button-hover hover:border-wow-gold hover:shadow-wow-btn-hover text-sm sm:text-base"
+      @click="openDialog"
     >
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -62,8 +62,8 @@
             <div class="flex gap-2">
               <button
                 v-if="isCustomList"
-                @click="handleResetToDefault"
                 class="bg-[rgba(150,20,20,0.3)] hover:bg-[rgba(200,20,20,0.4)] text-wow-text-light text-sm px-2 py-1 rounded border border-wow-horde"
+                @click="handleResetToDefault"
               >
                 重置為預設
               </button>
@@ -93,14 +93,14 @@
           <!-- 按鈕區域 -->
           <div class="flex justify-end gap-3 mt-4">
             <button
-              @click="closeDialog"
               class="px-3 py-1.5 border border-wow-border-dark rounded bg-[rgba(40,30,20,0.5)] text-wow-text-light hover:bg-[rgba(60,45,30,0.5)]"
+              @click="closeDialog"
             >
               取消
             </button>
             <button
-              @click="handleSavePlayerList"
               class="px-4 py-1.5 bg-wow-red-button text-wow-gold-light border border-wow-gold-dark rounded font-bold hover:bg-wow-red-button-hover hover:border-wow-gold"
+              @click="handleSavePlayerList"
             >
               保存列表
             </button>
@@ -111,8 +111,8 @@
   </div>
 </template>
 
-<script lang="ts">
-  import { defineComponent, ref } from 'vue';
+<script lang="ts" setup>
+  import { ref } from 'vue';
   import {
     getCurrentPlayerList,
     validatePlayerListText,
@@ -122,101 +122,86 @@
     fetchDefaultPlayerList,
   } from '@/utils/playerStorage';
 
-  export default defineComponent({
-    name: 'PlayerUploadDialog',
-    emits: ['update-player-list'],
-    setup(props, { emit }) {
-      // 狀態
-      const isDialogOpen = ref(false);
-      const playerListText = ref('');
-      const validationMessage = ref('');
-      const isCustomList = ref(false);
-      const lastUpdated = ref('');
+  interface Emits {
+    (e: 'update-player-list', playerList: string[]): void;
+  }
+  const emit = defineEmits<Emits>();
 
-      // 打開對話框
-      const openDialog = async () => {
-        isDialogOpen.value = true;
-        await loadCurrentPlayerList();
-      };
+  const isDialogOpen = ref(false);
+  const playerListText = ref('');
+  const validationMessage = ref('');
+  const isCustomList = ref(false);
+  const lastUpdated = ref('');
 
-      // 關閉對話框
-      const closeDialog = () => {
-        isDialogOpen.value = false;
-        validationMessage.value = '';
-      };
+  // 打開對話框
+  const openDialog = async () => {
+    isDialogOpen.value = true;
+    await loadCurrentPlayerList();
+  };
 
-      // 點擊外部區域關閉對話框
-      const closeDialogIfClickedOutside = (event: MouseEvent) => {
-        if (event.target === event.currentTarget) {
-          closeDialog();
-        }
-      };
+  // 關閉對話框
+  const closeDialog = () => {
+    isDialogOpen.value = false;
+    validationMessage.value = '';
+  };
 
-      // 從儲存加載當前玩家列表
-      const loadCurrentPlayerList = async () => {
-        const { playerList, isCustom, lastUpdated: updated } = await getCurrentPlayerList();
-        playerListText.value = playerList.join('\n');
-        isCustomList.value = isCustom;
-        lastUpdated.value = updated;
-      };
+  // 點擊外部區域關閉對話框
+  const closeDialogIfClickedOutside = (event: MouseEvent) => {
+    if (event.target === event.currentTarget) {
+      closeDialog();
+    }
+  };
 
-      // 加載默認玩家列表
-      const loadDefaultList = async () => {
-        const defaultListText = await fetchDefaultPlayerList();
-        playerListText.value = defaultListText;
-      };
+  // 從儲存加載當前玩家列表
+  const loadCurrentPlayerList = async () => {
+    const { playerList, isCustom, lastUpdated: updated } = await getCurrentPlayerList();
+    playerListText.value = playerList.join('\n');
+    isCustomList.value = isCustom;
+    lastUpdated.value = updated;
+  };
 
-      // 處理保存玩家列表
-      const handleSavePlayerList = () => {
-        const text = playerListText.value;
+  // 加載默認玩家列表
+  const loadDefaultList = async () => {
+    const defaultListText = await fetchDefaultPlayerList();
+    playerListText.value = defaultListText;
+  };
 
-        // 驗證
-        const validation = validatePlayerListText(text);
-        if (!validation.valid) {
-          validationMessage.value = validation.message || '格式錯誤';
-          return;
-        }
+  // 處理保存玩家列表
+  const handleSavePlayerList = () => {
+    const text = playerListText.value;
 
-        // 解析並保存
-        const playerList = parsePlayerListText(text);
-        saveCustomPlayerList(playerList);
+    // 驗證
+    const validation = validatePlayerListText(text);
+    if (!validation.valid) {
+      validationMessage.value = validation.message || '格式錯誤';
+      return;
+    }
 
-        // 更新狀態
-        isCustomList.value = true;
-        lastUpdated.value = new Date().toLocaleString('zh-TW');
-        validationMessage.value = '';
+    // 解析並保存
+    const playerList = parsePlayerListText(text);
+    saveCustomPlayerList(playerList);
 
-        // 通知父組件
-        emit('update-player-list', playerList);
-        closeDialog();
-      };
+    // 更新狀態
+    isCustomList.value = true;
+    lastUpdated.value = new Date().toLocaleString('zh-TW');
+    validationMessage.value = '';
 
-      // 處理重置為默認列表
-      const handleResetToDefault = async () => {
-        await loadDefaultList();
-        resetToDefaultPlayerList();
+    // 通知父組件
+    emit('update-player-list', playerList);
+    closeDialog();
+  };
 
-        // 更新狀態
-        isCustomList.value = false;
-        lastUpdated.value = '';
-        validationMessage.value = '';
+  // 處理重置為默認列表
+  const handleResetToDefault = async () => {
+    await loadDefaultList();
+    resetToDefaultPlayerList();
 
-        // 通知父組件
-        emit('update-player-list', 'default');
-      };
+    // 更新狀態
+    isCustomList.value = false;
+    lastUpdated.value = '';
+    validationMessage.value = '';
 
-      return {
-        isDialogOpen,
-        playerListText,
-        validationMessage,
-        isCustomList,
-        lastUpdated,
-        openDialog,
-        closeDialog,
-        closeDialogIfClickedOutside,
-        handleSavePlayerList,
-        handleResetToDefault,
-      };
-    },
-  });
+    // 通知父組件
+    emit('update-player-list', ['default']);
+  };
 </script>

@@ -94,7 +94,24 @@ const usePlayerData = () => {
   };
 
   // 檢查缺少的附魔和寶石
-  const checkMissingEnchantsAndGems = (items: ItemSlots) => {
+  const shouldCheckOffhandEnchant = (className: string, activeSpecName: string, items: ItemSlots): boolean => {
+    if (!items.offhand) return false;
+
+    const dualWieldSpecsByClass: Record<string, string[]> = {
+      Rogue: ['Assassination', 'Outlaw', 'Subtlety'],
+      Shaman: ['Enhancement'],
+      Warrior: ['Fury'],
+      'Death Knight': ['Frost'],
+      DeathKnight: ['Frost'],
+      'Demon Hunter': ['Havoc', 'Vengeance'],
+      DemonHunter: ['Havoc', 'Vengeance'],
+      Monk: ['Brewmaster', 'Windwalker'],
+    };
+
+    return dualWieldSpecsByClass[className]?.includes(activeSpecName) ?? false;
+  };
+
+  const checkMissingEnchantsAndGems = (items: ItemSlots, className: string, activeSpecName: string) => {
     const missingEnchants: string[] = [];
     const missingGems: string[] = [];
 
@@ -116,6 +133,10 @@ const usePlayerData = () => {
       }
     }
 
+    if (shouldCheckOffhandEnchant(className, activeSpecName, items) && !items.offhand?.enchants?.length) {
+      missingEnchants.push(translateSlotNameMap.offhand);
+    }
+
     return { missingEnchants, missingGems };
   };
 
@@ -130,6 +151,7 @@ const usePlayerData = () => {
 
     // 從 API 獲取職業信息 (英文字串)
     const className = json.class || '';
+    const activeSpecName = json.active_spec_name || '';
     const classColor = getClassColor(className);
     const localizedClassName = getClassName(className);
 
@@ -143,7 +165,7 @@ const usePlayerData = () => {
     const raiderIoUrl = `https://raider.io/characters/${config.region}/${encodeRealm}/${encodeName}`;
 
     // 檢查缺少的附魔和寶石
-    const { missingEnchants, missingGems } = checkMissingEnchantsAndGems(gear?.items || {});
+    const { missingEnchants, missingGems } = checkMissingEnchantsAndGems(gear?.items || ({} as ItemSlots), className, activeSpecName);
 
     // 構建提示文本
     let enhancementWarning = '';

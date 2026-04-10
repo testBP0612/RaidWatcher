@@ -51,6 +51,36 @@
   --shadow-wow-btn-hover: 0 0 10px rgba(200, 170, 110, 0.3);
 }
 
+@keyframes wow-panel-glow {
+  0% {
+    transform: translateX(-0.25rem);
+    opacity: 0.34;
+  }
+  50% {
+    transform: translateX(0.15rem);
+    opacity: 0.5;
+  }
+  100% {
+    transform: translateX(-0.25rem);
+    opacity: 0.34;
+  }
+}
+
+@keyframes wow-warning-pulse {
+  0% {
+    opacity: 0.78;
+    filter: saturate(1);
+  }
+  50% {
+    opacity: 0.96;
+    filter: saturate(1.08);
+  }
+  100% {
+    opacity: 0.78;
+    filter: saturate(1);
+  }
+}
+
 body {
   font-family: 'Noto Sans TC', 'Cinzel', sans-serif;
   background-color: var(--color-wow-bg-dark);
@@ -59,24 +89,156 @@ body {
   background-size: cover;
   background-position: center;
   background-attachment: fixed;
+  min-height: 100svh;
   position: relative;
 }
 
 body::before {
   content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(10, 8, 6, 0.8);
-  z-index: -1;
+  position: fixed;
+  inset: 0;
+  background:
+    linear-gradient(180deg, rgba(10, 8, 6, 0.82), rgba(10, 8, 6, 0.92)),
+    radial-gradient(circle at top, rgba(200, 170, 110, 0.12), transparent 30%);
+  z-index: 0;
 }
 
 #app {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 20px;
+  min-height: 100svh;
   position: relative;
   z-index: 1;
+}
+
+.wow-panel {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid var(--color-wow-gold-dark);
+  border-radius: 1.75rem;
+  background:
+    linear-gradient(180deg, rgba(34, 25, 17, 0.96), rgba(18, 13, 9, 0.99)),
+    linear-gradient(135deg, rgba(200, 170, 110, 0.06), transparent 38%);
+  background-size: 100% 100%, 180% 180%;
+  background-position: 0 0, 0% 50%;
+  box-shadow:
+    inset 0 1px 0 rgba(248, 230, 179, 0.05),
+    inset 0 -10px 24px rgba(0, 0, 0, 0.12),
+    0 16px 40px rgba(0, 0, 0, 0.35);
+  transition:
+    transform 220ms ease,
+    border-color 220ms ease,
+    box-shadow 220ms ease,
+    filter 220ms ease,
+    background-position 260ms ease;
+}
+
+.wow-panel::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(110deg, transparent 0, rgba(248, 230, 179, 0.08) 18%, transparent 34%),
+    linear-gradient(180deg, rgba(248, 230, 179, 0.035), transparent 22%);
+  opacity: 0.38;
+  transition: opacity 220ms ease, transform 220ms ease;
+  animation: wow-panel-glow 8s ease-in-out infinite;
+}
+
+.wow-panel:hover::before {
+  opacity: 0.56;
+  transform: translateX(0.35rem);
+}
+
+.wow-panel:hover {
+  background-position: 0 0, 100% 50%;
+}
+
+.wow-panel-warning {
+  border-color: rgba(179, 0, 0, 0.9);
+  box-shadow:
+    inset 0 1px 0 rgba(248, 230, 179, 0.04),
+    inset 0 0 0 1px rgba(100, 18, 18, 0.18),
+    0 16px 40px rgba(78, 8, 8, 0.28);
+}
+
+.wow-panel-warning:hover {
+  filter: brightness(1.03);
+}
+
+.wow-section-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--color-wow-text-medium);
+}
+
+.wow-divider {
+  position: relative;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(122, 98, 41, 0.8), transparent);
+}
+
+.wow-chip {
+  border: 1px solid rgba(46, 36, 24, 0.95);
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.wow-button {
+  display: inline-flex;
+  min-height: 2.75rem;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  border: 1px solid var(--color-wow-gold-dark);
+  border-radius: 1rem;
+  background:
+    linear-gradient(180deg, rgba(87, 26, 12, 0.92), rgba(61, 17, 8, 0.96)),
+    linear-gradient(135deg, rgba(248, 230, 179, 0.08), transparent 36%);
+  color: var(--color-wow-gold-light);
+  font-weight: 700;
+  transition:
+    transform 180ms ease,
+    border-color 180ms ease,
+    background 180ms ease,
+    box-shadow 180ms ease,
+    filter 180ms ease;
+  box-shadow:
+    inset 0 1px 0 rgba(248, 230, 179, 0.08),
+    inset 0 -6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.wow-button:hover {
+  border-color: var(--color-wow-gold);
+  transform: translateY(-1px);
+  filter: brightness(1.04);
+  box-shadow:
+    inset 0 1px 0 rgba(248, 230, 179, 0.12),
+    inset 0 -6px 12px rgba(0, 0, 0, 0.2),
+    0 8px 18px rgba(0, 0, 0, 0.18);
+}
+
+.wow-button-secondary {
+  background:
+    linear-gradient(180deg, rgba(48, 35, 23, 0.92), rgba(28, 21, 15, 0.96)),
+    linear-gradient(135deg, rgba(248, 230, 179, 0.04), transparent 36%);
+  color: var(--color-wow-text-light);
+}
+
+.wow-button-danger {
+  border-color: rgba(179, 0, 0, 0.75);
+  background:
+    linear-gradient(180deg, rgba(109, 20, 20, 0.9), rgba(74, 13, 13, 0.96)),
+    linear-gradient(135deg, rgba(248, 230, 179, 0.04), transparent 36%);
+}
+
+.wow-status-pill {
+  border-radius: 999px;
+  border: 1px solid rgba(46, 36, 24, 0.9);
+  background: rgba(0, 0, 0, 0.18);
+}
+
+.wow-warning-bar {
+  animation: wow-warning-pulse 3.2s ease-in-out infinite;
 }

@@ -1,143 +1,160 @@
 <template>
-  <div
-    class="bg-gradient-to-b from-[rgba(40,30,20,0.9)] to-[rgba(30,20,10,0.9)] border border-wow-gold-dark rounded shadow-wow-box overflow-hidden transition-all duration-300 hover:shadow-wow-box-hover hover:border-wow-gold transform hover:-translate-y-1"
+  <article
+    class="wow-panel group flex h-full flex-col hover:border-wow-gold hover:shadow-wow-box-hover"
+    :class="{ 'wow-panel-warning': player.enhancementWarning }"
   >
-    <!-- 卡片頭部 -->
-    <div class="bg-gradient-to-b from-[#3d2f1b] to-[#211909] p-2.5 sm:p-3 border-b border-wow-gold-dark">
-      <div class="flex justify-between items-center">
-        <div class="flex items-center gap-2">
-          <!-- 角色頭像 -->
+    <div
+      v-if="player.enhancementWarning"
+      class="wow-warning-bar absolute inset-x-0 top-0 h-1.5 bg-[linear-gradient(90deg,rgba(179,0,0,0.85),rgba(248,230,179,0.65),rgba(179,0,0,0.85))]"
+    ></div>
+    <div
+      class="absolute inset-x-0 top-0 h-24 bg-[radial-gradient(circle_at_top_right,rgba(200,170,110,0.22),transparent_52%)] opacity-80"
+    ></div>
+
+    <div class="relative flex flex-1 flex-col p-3.5 sm:p-[1.125rem] lg:p-5">
+      <div class="flex flex-col gap-3.5 sm:gap-[1.125rem]">
+        <div class="flex min-w-0 items-start gap-3 sm:gap-4">
           <div
-            class="w-10 h-10 sm:w-12 sm:h-12 rounded-full overflow-hidden border-2 border-wow-gold-dark flex-shrink-0"
+            class="h-14 w-14 flex-shrink-0 overflow-hidden rounded-full border-2 border-wow-gold-dark bg-[rgba(0,0,0,0.35)] sm:h-16 sm:w-16"
           >
-            <img
-              v-if="player.thumbnailUrl"
-              :src="player.thumbnailUrl"
-              alt="Character Portrait"
-              class="w-full h-full object-cover"
-            />
-            <div v-else class="w-full h-full bg-[rgba(0,0,0,0.5)] flex items-center justify-center text-wow-text-light">
-              <span class="text-xs sm:text-sm">無圖</span>
-            </div>
+            <img v-if="player.thumbnailUrl" :src="player.thumbnailUrl" alt="Character Portrait" class="h-full w-full object-cover" />
+            <div v-else class="flex h-full w-full items-center justify-center text-xs text-wow-text-light">無圖</div>
           </div>
 
-          <!-- 角色 -->
-          <div>
-            <h3 class="font-wow-title font-bold text-lg sm:text-xl tracking-wide" :style="{ color: player.classColor }">
+          <div class="min-w-0 flex-1">
+            <p class="wow-section-label !text-[0.68rem] !tracking-[0.22em]">Character</p>
+            <h3
+              class="mt-1 break-words font-wow-title text-[1.7rem] leading-tight font-bold tracking-[0.03em] sm:text-[1.9rem]"
+              :style="{ color: player.classColor }"
+            >
               {{ player.name }}
             </h3>
-            <div class="flex items-center text-sm gap-1.5">
-              <span class="text-wow-text-light">{{ player.localizedClassName }}</span>
-              <span
-                class="text-wow-text-light px-1.5 py-0.5 rounded bg-[rgba(0,0,0,0.3)] border border-wow-border-dark"
-              >
+            <div class="mt-2 flex flex-wrap items-center gap-2 text-sm text-wow-text-light">
+              <span>{{ player.localizedClassName }}</span>
+              <span class="wow-chip px-2 py-0.5 text-xs">
                 {{ player.realm }}
               </span>
             </div>
           </div>
         </div>
 
-        <!-- 裝等 -->
-        <div class="flex-shrink-0 text-right">
-          <p class="text-wow-text-light text-sm">裝等</p>
-          <p class="font-bold text-lg sm:text-xl" :style="{ color: player.ilvlColor }">{{ player.ilvl }}</p>
-        </div>
-      </div>
-    </div>
-
-    <!-- 卡片內容 -->
-    <div class="p-2.5 sm:p-3 space-y-2">
-      <!-- 第一行：M+ 和場次 -->
-      <div class="flex gap-2">
-        <!-- 本周最高M+ -->
-        <div class="bg-[rgba(0,0,0,0.2)] px-2.5 py-2 rounded border border-wow-border-dark flex-1">
-          <div class="flex justify-between items-center">
-            <div>
-              <p class="text-wow-text-light text-sm">本周最高M+</p>
-              <p class="font-bold text-lg text-wow-highlight">{{ player.key }}</p>
-            </div>
-          </div>
-        </div>
-
-        <!-- 本周場次 -->
         <div
-          class="bg-[rgba(0,0,0,0.2)] px-2.5 py-2 rounded border border-wow-border-dark flex-1"
-          :class="{ 'border-wow-horde bg-[rgba(179,0,0,0.2)]': player.currentRunsCount === 0 }"
+          class="flex items-end justify-between gap-3 rounded-[1.25rem] border border-wow-gold-dark bg-[linear-gradient(180deg,rgba(12,10,8,0.28),rgba(26,20,14,0.42))] px-4 py-3 sm:max-w-[12rem] sm:self-end sm:text-right"
         >
-          <p class="text-wow-text-light text-sm">本周場次</p>
-          <div class="flex items-center">
-            <p class="font-bold text-base sm:text-lg" :class="{ 'text-wow-horde': player.currentRunsCount === 0 }">
-              {{ player.currentRunsCount }}
-            </p>
-            <span v-if="player.currentRunsCount === 0" class="ml-1 text-base sm:text-lg">🤡</span>
-          </div>
-        </div>
-
-        <!-- 上周場次 -->
-        <div
-          class="bg-[rgba(0,0,0,0.2)] px-2.5 py-2 rounded border border-wow-border-dark flex-1"
-          :class="{ 'border-wow-horde bg-[rgba(179,0,0,0.2)]': player.previousRunsCount === 0 }"
-        >
-          <p class="text-wow-text-light text-sm">上周場次</p>
-          <div class="flex items-center">
-            <p class="font-bold text-base sm:text-lg" :class="{ 'text-wow-horde': player.previousRunsCount === 0 }">
-              {{ player.previousRunsCount }}
-            </p>
-            <span v-if="player.previousRunsCount === 0" class="ml-1 text-base sm:text-lg">🤡</span>
-          </div>
+          <p class="wow-section-label !text-[0.66rem] !tracking-[0.18em]">Item Level</p>
+          <p class="mt-1 font-wow-title text-3xl leading-none" :style="{ color: player.ilvlColor }">{{ player.ilvl }}</p>
         </div>
       </div>
 
-      <!-- 第二行：T裝和裝備警告 -->
-      <div class="flex gap-2">
-        <!-- T裝 -->
-        <div
-          class="bg-[rgba(0,0,0,0.2)] px-2.5 py-2 rounded border border-wow-border-dark"
-          :class="{ 'flex-1': !player.enhancementWarning }"
-        >
-          <p class="text-wow-text-light text-sm">T裝</p>
-          <p class="font-bold text-base sm:text-lg text-wow-text-medium">{{ player.tierPieces }}</p>
+      <div class="mt-3.5 flex flex-wrap items-center gap-2">
+        <div class="wow-chip px-3 py-1 text-xs text-wow-text-medium">
+          最近完成: {{ player.time }}
         </div>
-
-        <!-- 裝備警告 -->
         <div
           v-if="player.enhancementWarning"
-          class="bg-[rgba(179,0,0,0.2)] px-2.5 py-2 rounded border border-wow-horde text-wow-text-light flex-1"
+          class="rounded-full border border-wow-horde bg-[rgba(140,14,14,0.2)] px-3 py-1 text-xs font-semibold uppercase tracking-[0.14em] text-wow-gold-light"
         >
-          <div class="flex items-start gap-2">
-            <div class="flex-shrink-0">
-              <p class="text-wow-horde text-sm font-bold whitespace-nowrap">
-                <i class="fas fa-exclamation-triangle mr-1"></i>
+          Gear Warning
+        </div>
+      </div>
+
+      <div class="mt-4 grid gap-3 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)]">
+        <div class="rounded-[1.4rem] border border-wow-gold-dark bg-[linear-gradient(180deg,rgba(11,9,7,0.24),rgba(24,18,13,0.38))] p-4">
+          <p class="wow-section-label !text-[0.7rem] !tracking-[0.22em]">角色面板</p>
+
+          <div class="mt-3 space-y-2.5">
+            <div class="flex items-center justify-between gap-3 border-b border-wow-border-dark pb-2">
+              <span class="text-sm text-wow-text-medium">本周最高 M+</span>
+              <span class="font-wow-title text-2xl text-wow-highlight">{{ player.key }}</span>
+            </div>
+
+            <div
+              class="flex items-center justify-between gap-3 border-b border-wow-border-dark pb-2"
+              :class="{ 'text-wow-horde': player.currentRunsCount === 0 }"
+            >
+              <span class="text-sm text-wow-text-medium">本周場次</span>
+              <span class="flex items-center gap-2 font-wow-title text-2xl" :class="{ 'text-wow-gold-light': player.currentRunsCount !== 0, 'text-wow-horde': player.currentRunsCount === 0 }">
+                {{ player.currentRunsCount }}
+                <span v-if="player.currentRunsCount === 0" class="text-xl leading-none">🤡</span>
+              </span>
+            </div>
+
+            <div
+              class="flex items-center justify-between gap-3"
+              :class="{ 'text-wow-horde': player.previousRunsCount === 0 }"
+            >
+              <span class="text-sm text-wow-text-medium">上周場次</span>
+              <span class="flex items-center gap-2 font-wow-title text-2xl" :class="{ 'text-wow-gold-light': player.previousRunsCount !== 0, 'text-wow-horde': player.previousRunsCount === 0 }">
+                {{ player.previousRunsCount }}
+                <span v-if="player.previousRunsCount === 0" class="text-xl leading-none">🤡</span>
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <div class="rounded-[1.4rem] border border-wow-border-dark bg-[rgba(0,0,0,0.1)] p-4">
+          <p class="wow-section-label !text-[0.7rem] !tracking-[0.22em]">裝備摘要</p>
+
+          <div class="mt-3 space-y-3">
+            <div>
+              <p class="text-sm text-wow-text-medium">T 裝進度</p>
+              <p class="mt-1 text-base font-semibold leading-tight text-wow-text-light">{{ player.tierPieces }}</p>
+            </div>
+
+            <div class="rounded-xl border border-wow-border-dark bg-[rgba(0,0,0,0.1)] px-3 py-2">
+              <p class="wow-section-label !text-[0.66rem] !tracking-[0.18em]">角色狀態</p>
+              <p class="mt-1 text-sm text-wow-text-light">
+                {{ player.enhancementWarning ? '裝備需補強，請優先處理附魔或寶石。' : '裝備檢查正常，可繼續觀察周常與裝等。' }}
               </p>
             </div>
-            <p class="text-sm text-wow-text-light leading-tight line-clamp-2 flex-1 whitespace-pre-wrap">
+          </div>
+        </div>
+      </div>
+
+      <div
+        v-if="player.enhancementWarning"
+        class="mt-3.5 rounded-2xl border border-wow-horde bg-[linear-gradient(180deg,rgba(122,19,19,0.18),rgba(64,10,10,0.28))] p-3.5 sm:p-4"
+      >
+        <div class="flex items-start gap-3">
+          <div
+            class="mt-0.5 flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full border border-wow-horde bg-[rgba(0,0,0,0.22)] text-sm text-wow-gold-light"
+          >
+            !
+          </div>
+          <div class="min-w-0">
+            <p class="text-xs font-semibold uppercase tracking-[0.22em] text-wow-gold-light">Enhancement Warning</p>
+            <p class="mt-2 whitespace-pre-wrap text-sm leading-relaxed text-wow-text-light">
               {{ player.enhancementWarning }}
             </p>
           </div>
         </div>
       </div>
-    </div>
 
-    <!-- 卡片底部 - 連結 -->
-    <div class="bg-[rgba(0,0,0,0.2)] py-2 px-2.5 border-t border-wow-border-dark flex justify-center gap-4">
-      <a
-        :href="player.wclUrl"
-        target="_blank"
-        class="inline-flex items-center justify-center w-8 h-8 sm:w-9 sm:h-9 rounded-full text-wow-text-light transition-all duration-200 hover:scale-110 hover:shadow-wow-light hover:bg-wow-red-button-hover"
-        title="WarcraftLogs"
-      >
-        <img src="/images/wcl-icon.png" alt="WCL" class="w-full h-full" />
-      </a>
-      <a
-        :href="player.raiderIoUrl"
-        target="_blank"
-        class="inline-flex items-center justify-center w-8 h-8 sm:w-9 sm:h-9 rounded-full text-wow-text-light transition-all duration-200 hover:scale-110 hover:shadow-wow-light hover:bg-wow-alliance"
-        title="Raider.io"
-      >
-        <img src="/images/io-icon.webp" alt="RIO" class="w-full h-full" />
-      </a>
+      <div class="mt-auto grid grid-cols-2 gap-2.5 pt-4 sm:gap-3">
+        <a
+          :href="player.wclUrl"
+          target="_blank"
+          rel="noreferrer"
+          class="inline-flex items-center justify-center gap-2 rounded-2xl border border-wow-border-dark bg-[rgba(0,0,0,0.12)] px-4 py-3 text-sm font-semibold text-wow-text-light transition-all duration-200 hover:border-wow-gold hover:bg-[rgba(75,17,6,0.4)]"
+          title="WarcraftLogs"
+        >
+          <img src="/images/wcl-icon.png" alt="WCL" class="h-5 w-5 object-contain" />
+          <span>WarcraftLogs</span>
+        </a>
+
+        <a
+          :href="player.raiderIoUrl"
+          target="_blank"
+          rel="noreferrer"
+          class="inline-flex items-center justify-center gap-2 rounded-2xl border border-wow-border-dark bg-[rgba(0,0,0,0.12)] px-4 py-3 text-sm font-semibold text-wow-text-light transition-all duration-200 hover:border-wow-gold hover:bg-[rgba(0,120,255,0.14)]"
+          title="Raider.io"
+        >
+          <img src="/images/io-icon.webp" alt="RIO" class="h-5 w-5 object-contain" />
+          <span>Raider.IO</span>
+        </a>
+      </div>
     </div>
-  </div>
+  </article>
 </template>
 
 <script lang="ts" setup>

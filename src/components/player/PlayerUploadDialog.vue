@@ -1,8 +1,7 @@
 <template>
   <div>
-    <!-- 上傳按鈕 - 位於頁面頂部的操作區域 -->
     <button
-      class="bg-wow-red-button text-wow-gold-light border-2 border-wow-gold-dark rounded px-3 sm:px-4 py-1.5 sm:py-2 flex items-center gap-1.5 sm:gap-2 cursor-pointer transition-all duration-200 font-wow-title font-bold hover:bg-wow-red-button-hover hover:border-wow-gold hover:shadow-wow-btn-hover text-sm sm:text-base"
+      class="wow-button flex w-full px-4 py-2 text-sm sm:text-base"
       @click="openDialog"
     >
       <svg
@@ -23,25 +22,21 @@
       <span>管理玩家列表</span>
     </button>
 
-    <!-- 對話框背景遮罩 -->
     <div
       v-if="isDialogOpen"
       class="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50"
       @click="closeDialogIfClickedOutside"
     >
-      <!-- 對話框 -->
       <div
-        class="bg-gradient-to-b from-[rgba(40,30,20,0.95)] to-[rgba(30,20,10,0.95)] w-11/12 max-w-2xl rounded-lg border-2 border-wow-gold-dark shadow-wow-box overflow-hidden"
+        class="w-11/12 max-w-2xl overflow-hidden rounded-[1.75rem] border-2 border-wow-gold-dark bg-gradient-to-b from-[rgba(40,30,20,0.96)] to-[rgba(30,20,10,0.96)] shadow-wow-box"
         @click.stop
       >
-        <!-- 對話框標題 -->
-        <div class="bg-gradient-to-b from-[#3d2f1b] to-[#211909] p-3 border-b border-wow-gold-dark">
+        <div class="border-b border-wow-gold-dark bg-gradient-to-b from-[#3d2f1b] to-[#211909] p-4">
           <h2 class="font-wow-title text-xl sm:text-2xl font-bold text-wow-gold tracking-wide">管理玩家列表</h2>
+          <p class="mt-2 text-sm text-wow-text-medium">調整追蹤名單後，首頁卡片會直接套用新的玩家清單。</p>
         </div>
 
-        <!-- 對話框內容 -->
         <div class="p-4 space-y-4">
-          <!-- 使用狀態顯示 -->
           <div class="flex items-center justify-between text-wow-text-light mb-2">
             <div class="flex items-center gap-2">
               <span class="text-sm sm:text-base">
@@ -62,7 +57,7 @@
             <div class="flex gap-2">
               <button
                 v-if="isCustomList"
-                class="bg-[rgba(150,20,20,0.3)] hover:bg-[rgba(200,20,20,0.4)] text-wow-text-light text-sm px-2 py-1 rounded border border-wow-horde"
+                class="wow-button wow-button-danger px-3 py-1.5 text-sm"
                 @click="handleResetToDefault"
               >
                 重置為預設
@@ -70,36 +65,32 @@
             </div>
           </div>
 
-          <!-- 說明文字 -->
-          <div class="text-wow-text-light text-sm border border-wow-border-dark bg-[rgba(0,0,0,0.2)] p-3 rounded">
+          <div class="rounded-2xl border border-wow-border-dark bg-[rgba(0,0,0,0.2)] p-3 text-sm text-wow-text-light">
             <p>每行請輸入一個玩家，格式為：<span class="text-wow-gold">玩家名稱-伺服器</span></p>
             <p class="mt-1 opacity-80">例如：經過的兔子-寒冰皇冠</p>
           </div>
 
-          <!-- 文本輸入區域 -->
           <div class="w-full">
             <textarea
               v-model="playerListText"
-              class="w-full h-64 bg-[rgba(20,15,10,0.8)] text-wow-text-light border border-wow-border-dark p-3 rounded resize-none font-mono text-sm"
+              class="h-64 w-full resize-none rounded-2xl border border-wow-border-dark bg-[rgba(20,15,10,0.8)] p-3 font-mono text-sm text-wow-text-light"
               placeholder="在此輸入玩家列表，每行一個玩家..."
             ></textarea>
           </div>
 
-          <!-- 驗證訊息區域 -->
           <div v-if="validationMessage" class="text-wow-horde text-sm">
             {{ validationMessage }}
           </div>
 
-          <!-- 按鈕區域 -->
           <div class="flex justify-end gap-3 mt-4">
             <button
-              class="px-3 py-1.5 border border-wow-border-dark rounded bg-[rgba(40,30,20,0.5)] text-wow-text-light hover:bg-[rgba(60,45,30,0.5)]"
+              class="wow-button wow-button-secondary px-3 py-2"
               @click="closeDialog"
             >
               取消
             </button>
             <button
-              class="px-4 py-1.5 bg-wow-red-button text-wow-gold-light border border-wow-gold-dark rounded font-bold hover:bg-wow-red-button-hover hover:border-wow-gold"
+              class="wow-button px-4 py-2"
               @click="handleSavePlayerList"
             >
               保存列表

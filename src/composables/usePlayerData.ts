@@ -282,11 +282,18 @@ const usePlayerData = () => {
     return sortPlayersByItemLevel(filteredPlayers, sortAscending.value);
   });
 
+  const totalPlayersCount = computed(() => players.value.length);
+  const warningPlayersCount = computed(
+    () => players.value.filter(player => player.enhancementWarning && player.enhancementWarning.length > 0).length,
+  );
+
   onMounted(fetchAllPlayersData);
 
   return {
     state: {
       players: sortedPlayers,
+      totalPlayersCount,
+      warningPlayersCount,
       showOnlyWarnings,
       loading,
       error,

@@ -1,7 +1,9 @@
 <template>
-  <!-- 有過濾結果時顯示計數指示器 -->
-  <div v-if="count > 0" class="mb-4 bg-[rgba(179,0,0,0.2)] border border-wow-horde rounded py-2 px-4">
-    <p class="flex items-center justify-center text-wow-text-light">
+  <div
+    v-if="count > 0"
+    class="rounded-2xl border border-wow-horde bg-[rgba(179,0,0,0.2)] px-4 py-3 shadow-wow-box"
+  >
+    <p class="flex flex-wrap items-center justify-center gap-2 text-center text-wow-text-light">
       <svg
         xmlns="http://www.w3.org/2000/svg"
         viewBox="0 0 24 24"
@@ -16,18 +18,21 @@
         <line x1="12" y1="9" x2="12" y2="13"></line>
         <line x1="12" y1="17" x2="12.01" y2="17"></line>
       </svg>
-      <span>目前只顯示有裝備警告的玩家 ({{ count }} 位)</span>
+      <span>目前只顯示有裝備警告的玩家</span>
+      <span class="wow-status-pill border-wow-horde px-2 py-0.5 text-xs font-semibold">
+        {{ count }} 位
+      </span>
     </p>
   </div>
 
-  <!-- 無過濾結果時顯示空狀態 -->
   <div
     v-else
-    class="bg-gradient-to-b from-[rgba(40,30,20,0.9)] to-[rgba(30,20,10,0.9)] border border-wow-gold-dark rounded shadow-wow-box p-6 my-4 text-center"
+    class="rounded-[1.75rem] border border-wow-gold-dark bg-gradient-to-b from-[rgba(40,30,20,0.9)] to-[rgba(30,20,10,0.9)] p-6 text-center shadow-wow-box"
   >
-    <p class="text-wow-text-light text-lg">目前沒有玩家存在裝備警告</p>
+    <p class="text-xs font-semibold uppercase tracking-[0.28em] text-wow-text-medium">All Clear</p>
+    <p class="mt-3 text-lg text-wow-text-light">目前沒有玩家存在裝備警告</p>
     <button
-      class="mt-4 bg-wow-red-button text-wow-gold-light border border-wow-gold-dark px-3 py-1.5 rounded cursor-pointer font-wow-title font-bold transition-all duration-200 hover:bg-wow-red-button-hover hover:border-wow-gold hover:shadow-wow-btn-hover text-sm"
+      class="wow-button mt-4 px-4 py-2 text-sm"
       @click="emit('toggleFilter')"
     >
       顯示所有玩家
